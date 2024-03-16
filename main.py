@@ -3,7 +3,7 @@ from telebot import TeleBot, StateMemoryStorage
 from datetime import datetime
 import requests
 import schedule
-from config import TOKEN
+from config import TOKEN, POGODAS_TOKEN
 
 from month_translate import formatted_date_uzbek
 
@@ -24,7 +24,7 @@ def send_message_akfa(caption, currency_caption):
 
 
 def send_message_pogodas(caption, currency_caption):
-    bot2 = TeleBot(TOKEN, state_storage=StateMemoryStorage())
+    bot2 = TeleBot(POGODAS_TOKEN, state_storage=StateMemoryStorage())
     bot2.send_photo("-1001215115441",
                     'http://itlink.uz/pogoda.jpeg',
                     caption=caption,
@@ -80,16 +80,6 @@ def get_info():
 Андижон  {andijan} °C 
 Фарғона {fergana} °C
 
-<a href="https://www.instagram.com/akfa_build/">Instagram</a> | <a href="https://t.me/akfa_build_uz">Telegram</a> | <a href="https://akfabuild.com/">Website</a> | <a href="https://www.youtube.com/channel/UCp_5bF2PrOd5TwIKHSfkuXw">Youtube</a> | <a href="https://www.facebook.com/akfabuilduz">Facebook</a>
-''', parse_mode="HTML")
-    bot.send_photo('-1001583799449',
-                   'https://i.pinimg.com/originals/6a/45/53/6a4553419e7852ebd3a5e253132ece18.jpg',
-                   f'''{formatted_date_uzbek} ҳолатига кўра валюта курслари:\n            
-🇺🇸 Доллар курси: {usd} сўм
-🇪🇺 Евро курси: {euro} сўм
-🇷🇺 Рубл курси: {rub} сўм
-
-<a href="https://www.instagram.com/akfa_build/">Instagram</a> | <a href="https://t.me/akfa_build_uz">Telegram</a> | <a href="https://akfabuild.com/">Website</a> | <a href="https://www.youtube.com/channel/UCp_5bF2PrOd5TwIKHSfkuXw">Youtube</a> | <a href="https://www.facebook.com/akfabuilduz">Facebook</a>
 """
     currency_caption = f"""{formatted_date_uzbek} ҳолатига кўра валюта курслари:\n            
 🇺🇸 Доллар курси: {usd} сўм
@@ -101,8 +91,9 @@ def get_info():
     akfa_reklama = '<a href="https://www.instagram.com/akfa_build/">Instagram</a> | <a href="https://t.me/akfa_build_uz">Telegram</a> | <a href="https://akfabuild.com/">Website</a> | <a href="https://www.youtube.com/channel/UCp_5bF2PrOd5TwIKHSfkuXw">Youtube</a> | <a href="https://www.facebook.com/akfabuilduz">Facebook</a>'
     send_message_akfa(caption + akfa_reklama, currency_caption + akfa_reklama)
     send_message_pogodas(caption, currency_caption)
-    schedule.every().days.at("07:00").do(get_info)
-    if __name__ == '__main__':
-        while True:
-            schedule.run_pending()
-            time.sleep(59)
+
+schedule.every().days.at("07:00").do(get_info)
+if __name__ == '__main__':
+    while True:
+        schedule.run_pending()
+        time.sleep(59)
