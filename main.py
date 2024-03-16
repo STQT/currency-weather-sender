@@ -30,7 +30,7 @@ def send_message_pogodas(caption, currency_caption):
                     caption=caption,
                     parse_mode="HTML")
     bot2.send_photo('-1001215115441',
-                    'http://itlink.uz/pogoda.jpeg',
+                    'http://itlink.uz/currency.jpg',
                     caption=currency_caption,
                     parse_mode='HTML')
 
