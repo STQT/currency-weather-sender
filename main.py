@@ -1,7 +1,10 @@
+import logging
+
 from telebot import TeleBot, StateMemoryStorage
 from datetime import datetime
 import requests
 from config import TOKEN, POGODAS_TOKEN
+from telebot.apihelper import ApiTelegramException
 
 from month_translate import formatted_date_uzbek
 
@@ -87,8 +90,14 @@ def get_info():
 
 """
     akfa_reklama = '<a href="https://www.instagram.com/akfa_build/">Instagram</a> | <a href="https://t.me/akfa_build_uz">Telegram</a> | <a href="https://akfabuild.com/">Website</a> | <a href="https://www.youtube.com/channel/UCp_5bF2PrOd5TwIKHSfkuXw">Youtube</a> | <a href="https://www.facebook.com/akfabuilduz">Facebook</a>'
-    send_message_akfa(caption + akfa_reklama, currency_caption + akfa_reklama)
-    send_message_pogodas(caption, currency_caption)
+    try:
+        send_message_akfa(caption + akfa_reklama, currency_caption + akfa_reklama)
+    except ApiTelegramException as e:
+        logging.error(f"Channel Error: {str(e)}")
+    try:
+        send_message_pogodas(caption, currency_caption)
+    except ApiTelegramException as e:
+        logging.error(f"Channel Error: {str(e)}")
 
 
 get_info()
