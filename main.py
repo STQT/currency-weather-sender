@@ -1,8 +1,6 @@
-import time
 from telebot import TeleBot, StateMemoryStorage
 from datetime import datetime
 import requests
-import schedule
 from config import TOKEN, POGODAS_TOKEN
 
 from month_translate import formatted_date_uzbek
@@ -92,8 +90,5 @@ def get_info():
     send_message_akfa(caption + akfa_reklama, currency_caption + akfa_reklama)
     send_message_pogodas(caption, currency_caption)
 
-schedule.every().days.at("07:00").do(get_info)
-if __name__ == '__main__':
-    while True:
-        schedule.run_pending()
-        time.sleep(59)
+
+get_info()
