@@ -15,7 +15,7 @@ current_datetime = datetime.now()
 
 
 def pogodas_text():
-    response = requests.get("https://media.leetcode.uz/info/aqi/?format=json")
+    response = requests.get("https://media.leetcode.uz/api/info/aqi/?format=json")
     if response.status_code == 200:
         weather_data = response.json()
         message = f"""
@@ -25,7 +25,7 @@ def pogodas_text():
         
 🔆 <b>Kunduzgi ob-havo:</b>  
 - <b>Harorat:</b> {weather_data['weather']['DailyForecasts'][0]['Temperature']['Maximum']['Value']}°C 
-- <b>Havo:</b> {iconPhraseToUzbek[weather_data['weather']['DailyForecasts'][0]['Day']['IconPhrase']]} ☀️  
+- <b>Havo:</b> {iconPhraseToUzbek[weather_data['weather']['DailyForecasts'][0]['Day']['IconPhrase'].lower()]} ☀️  
 - <b>Shamol:</b> {weather_data['weather']['DailyForecasts'][0]['Day']['Wind']['Speed']['Value']} km/s  
 - <b>Yomg'ir:</b> {weather_data['weather']['DailyForecasts'][0]['Day']['Rain']['Value']} mm 🌧️  
 - <b>Qoplama:</b> {'Bulutsiz' if weather_data['weather']['DailyForecasts'][0]['Day']['CloudCover'] == 0 else 'Bulutli'} ☁️  
@@ -33,7 +33,7 @@ def pogodas_text():
 
 🌙 <b>Tungi ob-havo:</b>  
 - <b>Harorat:</b> {weather_data['weather']['DailyForecasts'][0]['Temperature']['Minimum']['Value']}°C
-- <b>Havo:</b> {iconPhraseToUzbek[weather_data['weather']['DailyForecasts'][0]['Night']['IconPhrase']]} 🌙  
+- <b>Havo:</b> {iconPhraseToUzbek[weather_data['weather']['DailyForecasts'][0]['Night']['IconPhrase'].lower()]} 🌙  
 - <b>Shamol:</b> {weather_data['weather']['DailyForecasts'][0]['Night']['Wind']['Speed']['Value']} km/s  
 - <b>Yomg'ir:</b> {weather_data['weather']['DailyForecasts'][0]['Night']['Rain']['Value']} mm 🌧️  
 
@@ -41,7 +41,7 @@ def pogodas_text():
 - <b>Ozon:</b> {next((item['Value'] for item in weather_data['weather']['DailyForecasts'][0]['AirAndPollen'] if item['Name'] == 'AirQuality'), 'N/A')} 🌿  
 - <b>UV ko'rsatkichi:</b> {next((item['Value'] for item in weather_data['weather']['DailyForecasts'][0]['AirAndPollen'] if item['Name'] == 'UVIndex'), 'N/A')} ☀️ 
 - <b>Iflosligi:</b> {weather_data['aqi']['data']['current']['pollution']['aqius']}
-- <b>Inson sog'lig'iga ta'siri:</b> {get_aqi_description(weather_data['aqi']['data']['current']['pollution']['aqius'])[0]}
+- <b>Inson sog'lig'iga ta'siri:</b> {get_aqi_description(weather_data['aqi']['data']['current']['pollution']['aqius'])}
 """
         return message
 
@@ -75,11 +75,11 @@ def send_message_akfa(caption, currency_caption):
 
 def send_message_pogodas(caption, currency_caption):
     bot2 = TeleBot(POGODAS_TOKEN, state_storage=StateMemoryStorage())
-    bot2.send_photo(390736292,
+    bot2.send_photo("-1001583799449",
                     'http://itlink.uz/pogoda.jpeg',
                     caption=caption,
                     parse_mode="HTML")
-    bot2.send_photo(390736292,
+    bot2.send_photo("-1001583799449",
                     'http://itlink.uz/currency.jpg',
                     caption=currency_caption,
                     parse_mode='HTML')
