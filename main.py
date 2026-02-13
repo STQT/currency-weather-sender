@@ -75,11 +75,11 @@ def send_message_akfa(caption, currency_caption):
 
 def send_message_pogodas(caption, currency_caption):
     bot2 = TeleBot(POGODAS_TOKEN, state_storage=StateMemoryStorage())
-    bot2.send_photo("-1001583799449",
+    bot2.send_photo("-1001215115441",
                     'http://itlink.uz/pogoda.jpeg',
                     caption=caption,
                     parse_mode="HTML")
-    bot2.send_photo("-1001583799449",
+    bot2.send_photo("-1001215115441",
                     'http://itlink.uz/currency.jpg',
                     caption=currency_caption,
                     parse_mode='HTML')
@@ -138,13 +138,16 @@ def get_info():
 
 
 """
-    akfa_reklama = '<a href="https://www.instagram.com/akfa_build/">Instagram</a> | <a href="https://t.me/akfa_build_uz">Telegram</a> | <a href="https://akfabuild.com/">Website</a> | <a href="https://www.youtube.com/channel/UCp_5bF2PrOd5TwIKHSfkuXw">Youtube</a> | <a href="https://www.facebook.com/akfabuilduz">Facebook</a>'
+    #akfa_reklama = '<a href="https://www.instagram.com/akfa_build/">Instagram</a> | <a href="https://t.me/akfa_build_uz">Telegram</a> | <a href="https://akfabuild.com/">Website</a> | <a href="https://www.youtube.com/channel/UCp_5bF2PrOd5TwIKHSfkuXw">Youtube</a> | <a href="https://www.facebook.com/akfabuilduz">Facebook</a>'
+    #try:
+    #    send_message_akfa(caption + akfa_reklama, currency_caption + akfa_reklama)
+    #except ApiTelegramException as e:
+    #    logging.error(f"Channel Error: {str(e)}")
+    pogodas_text_str = pogodas_text()
+    print(pogodas_text_str)
+    currency_text = get_currency_text()
     try:
-        send_message_akfa(caption + akfa_reklama, currency_caption + akfa_reklama)
-    except ApiTelegramException as e:
-        logging.error(f"Channel Error: {str(e)}")
-    try:
-        send_message_pogodas(pogodas_text(), get_currency_text())
+        send_message_pogodas(pogodas_text_str, currency_text)
     except ApiTelegramException as e:
         logging.error(f"Channel Error: {str(e)}")
 
