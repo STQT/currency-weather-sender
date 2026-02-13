@@ -15,33 +15,42 @@ current_datetime = datetime.now()
 
 
 def pogodas_text():
-    response = requests.get("https://media.leetcode.uz/api/info/aqi/?format=json")
+    response = requests.get("https://billboard.mediabaza.uz/api/info/weather/")
     if response.status_code == 200:
         weather_data = response.json()
+        
+        # Преобразование timestamp в читаемый формат
+        sunrise_time = datetime.fromtimestamp(weather_data['sunrise']).strftime('%H:%M')
+        sunset_time = datetime.fromtimestamp(weather_data['sunset']).strftime('%H:%M')
+        
+        # Перевод погодных условий на узбекский
+        weather_uzbek = {
+            'Clear': 'Ochiq',
+            'Clouds': 'Bulutli',
+            'Rain': 'Yomg\'irli',
+            'Snow': 'Qorli',
+            'Thunderstorm': 'Momaqaldiroqli',
+            'Drizzle': 'Mayda yomg\'ir',
+            'Mist': 'Tumanli',
+            'Fog': 'Tumanli',
+            'Haze': 'Dumli'
+        }.get(weather_data['weather_main'], weather_data['weather_main'])
+        
         message = f"""
 🌤️ <b>Bugungi ob-havo</b>  
 📍 <b>Shahar:</b> Toshkent  
-📆 <b>Sana:</b> {datetime.strptime(weather_data['weather']['DailyForecasts'][0]['Date'], '%Y-%m-%dT%H:%M:%S%z').strftime('%d-%m-%Y')}  
+📆 <b>Sana:</b> {datetime.strptime(weather_data['last_updated'], '%Y-%m-%dT%H:%M:%S.%f%z').strftime('%d-%m-%Y')}  
         
-🔆 <b>Kunduzgi ob-havo:</b>  
-- <b>Harorat:</b> {weather_data['weather']['DailyForecasts'][0]['Temperature']['Maximum']['Value']}°C 
-- <b>Havo:</b> {iconPhraseToUzbek[weather_data['weather']['DailyForecasts'][0]['Day']['IconPhrase'].lower()]} ☀️  
-- <b>Shamol:</b> {weather_data['weather']['DailyForecasts'][0]['Day']['Wind']['Speed']['Value']} km/s  
-- <b>Yomg'ir:</b> {weather_data['weather']['DailyForecasts'][0]['Day']['Rain']['Value']} mm 🌧️  
-- <b>Qoplama:</b> {'Bulutsiz' if weather_data['weather']['DailyForecasts'][0]['Day']['CloudCover'] == 0 else 'Bulutli'} ☁️  
-- <b>Nisbiy namlik:</b> {weather_data['weather']['DailyForecasts'][0]['Day']['RelativeHumidity']['Average']}%  
+🌡️ <b>Harorat:</b>  
+- <b>Hozirgi:</b> {weather_data['current_temp']}°C
+- <b>Ertalabki:</b> {weather_data['morning_temp']}°C ☀️
+- <b>Kunduzgi:</b> {weather_data['afternoon_temp']}°C 🔆
+- <b>Kechqurun:</b> {weather_data['evening_temp']}°C 🌙
 
-🌙 <b>Tungi ob-havo:</b>  
-- <b>Harorat:</b> {weather_data['weather']['DailyForecasts'][0]['Temperature']['Minimum']['Value']}°C
-- <b>Havo:</b> {iconPhraseToUzbek[weather_data['weather']['DailyForecasts'][0]['Night']['IconPhrase'].lower()]} 🌙  
-- <b>Shamol:</b> {weather_data['weather']['DailyForecasts'][0]['Night']['Wind']['Speed']['Value']} km/s  
-- <b>Yomg'ir:</b> {weather_data['weather']['DailyForecasts'][0]['Night']['Rain']['Value']} mm 🌧️  
+☁️ <b>Ob-havo holati:</b> {weather_uzbek}
 
-⚠️ <b>Havo sifati:</b>  
-- <b>Ozon:</b> {next((item['Value'] for item in weather_data['weather']['DailyForecasts'][0]['AirAndPollen'] if item['Name'] == 'AirQuality'), 'N/A')} 🌿  
-- <b>UV ko'rsatkichi:</b> {next((item['Value'] for item in weather_data['weather']['DailyForecasts'][0]['AirAndPollen'] if item['Name'] == 'UVIndex'), 'N/A')} ☀️ 
-- <b>Iflosligi:</b> {weather_data['aqi']['data']['current']['pollution']['aqius']}
-- <b>Inson sog'lig'iga ta'siri:</b> {get_aqi_description(weather_data['aqi']['data']['current']['pollution']['aqius'])}
+🌅 <b>Quyosh chiqishi:</b> {sunrise_time}
+🌇 <b>Quyosh botishi:</b> {sunset_time}
 """
         return message
 
